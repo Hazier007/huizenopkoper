@@ -40,12 +40,12 @@ export default function OverOnsPage() {
             </Badge>
 
             <h1 className="text-4xl font-bold text-white md:text-6xl mb-6 leading-tight">
-              Uw betrouwbare partner voor woningverkoop
+              Snel en eerlijk uw woning verkopen
             </h1>
 
             <p className="mt-6 text-xl text-green-50 max-w-2xl mx-auto leading-relaxed">
-              Wij zijn een Belgisch bedrijf gespecialiseerd in de snelle en eerlijke aankoop van woningen. 
-              Transparant, discreet en altijd met respect voor uw situatie.
+              Huizenopkoper.be verbindt woningeigenaren met betrouwbare vastgoedinkopers in heel Vlaanderen. 
+              Geen gedoe, geen wachten, geen makelaarskosten.
             </p>
           </div>
         </div>
@@ -60,31 +60,32 @@ export default function OverOnsPage() {
             <div className="grid md:grid-cols-2 gap-12 items-center">
               <div>
                 <Badge className="mb-4 bg-green-100 text-green-700">
-                  Onze Missie
+                  Ons Verhaal
                 </Badge>
                 <h2 className="text-3xl font-bold text-gray-900 md:text-4xl mb-6">
-                  Woningverkoop zonder stress
+                  Woningverkoop moet simpeler kunnen
                 </h2>
                 <p className="text-lg text-gray-600 mb-6">
-                  Wij geloven dat het verkopen van uw woning niet ingewikkeld hoeft te zijn. 
-                  Daarom bieden wij een alternatief voor de traditionele makelaar: snel, eerlijk en zonder verrassingen.
+                  Huizenopkoper.be is ontstaan vanuit een simpele frustratie: het verkopen van een woning duurt te lang, 
+                  kost te veel en is te stressvol. Maandenlang wachten op kopers, eindeloze bezichtigingen, 
+                  onzekere onderhandelingen – het kan anders.
                 </p>
                 <p className="text-lg text-gray-600 mb-6">
-                  Of u nu snel wilt verkopen door een scheiding, erfenis, financiële redenen of gewoon 
-                  omdat u geen zin heeft in maandenlange onzekerheid – wij staan voor u klaar.
+                  Wij verbinden eigenaren die snel willen verkopen met serieuze vastgoedinkopers. 
+                  Geen gedoe, geen makelaarskosten, gewoon een eerlijk bod binnen 48 uur.
                 </p>
                 <ul className="space-y-3">
                   <li className="flex items-center gap-3">
                     <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0" />
-                    <span className="text-gray-700">Geen makelaarskosten</span>
+                    <span className="text-gray-700">Geen makelaarskosten voor u</span>
                   </li>
                   <li className="flex items-center gap-3">
                     <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0" />
-                    <span className="text-gray-700">Geen eindeloze bezichtigingen</span>
+                    <span className="text-gray-700">Binnen 48 uur een concreet bod</span>
                   </li>
                   <li className="flex items-center gap-3">
                     <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0" />
-                    <span className="text-gray-700">Geen onzekerheid over de verkoop</span>
+                    <span className="text-gray-700">Verkoop in 3-4 weken afgerond</span>
                   </li>
                 </ul>
               </div>
@@ -231,13 +232,13 @@ export default function OverOnsPage() {
                 <CardContent className="p-8">
                   <h3 className="text-xl font-bold text-gray-900 mb-6">Direct contact</h3>
                   <div className="space-y-4">
-                    <a href="tel:+32XXXXXXXXX" className="flex items-center gap-4 text-gray-600 hover:text-green-600 transition-colors">
+                    <a href="tel:+32477190918" className="flex items-center gap-4 text-gray-600 hover:text-green-600 transition-colors">
                       <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
                         <Phone className="w-5 h-5 text-green-600" />
                       </div>
                       <div>
                         <div className="font-semibold text-gray-900">Telefoon</div>
-                        <div>+32 XXX XX XX XX</div>
+                        <div>0477 19 09 18</div>
                       </div>
                     </a>
                     <a href="mailto:info@huizenopkoper.be" className="flex items-center gap-4 text-gray-600 hover:text-green-600 transition-colors">
@@ -249,7 +250,19 @@ export default function OverOnsPage() {
                         <div>info@huizenopkoper.be</div>
                       </div>
                     </a>
+                    <div className="flex items-center gap-4 text-gray-600 pt-4 border-t">
+                      <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
+                        <MapPin className="w-5 h-5 text-gray-600" />
+                      </div>
+                      <div>
+                        <div className="font-semibold text-gray-900">Regio</div>
+                        <div>Gent &amp; heel Vlaanderen</div>
+                      </div>
+                    </div>
                   </div>
+                  <p className="text-xs text-gray-500 mt-6 pt-4 border-t">
+                    Een initiatief van Hazier
+                  </p>
                 </CardContent>
               </Card>
 
