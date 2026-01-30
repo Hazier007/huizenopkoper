@@ -1,0 +1,121 @@
+:root {
+  --color-1: #2563eb;
+  --color-2: #60a5fa;
+  --color-3: #1e40af;
+  --color-4: #3b82f6;
+}
+
+.gooey-nav-container {
+  position: relative;
+  display: inline-block;
+}
+
+.gooey-nav-container nav ul {
+  display: flex;
+  gap: 0;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  position: relative;
+}
+
+.gooey-nav-container nav ul li {
+  position: relative;
+  z-index: 2;
+}
+
+.gooey-nav-container nav ul li a {
+  display: block;
+  padding: 0.75rem 1.5rem;
+  color: #4b5563;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.875rem;
+  transition: color 0.3s ease;
+  cursor: pointer;
+  position: relative;
+  z-index: 2;
+}
+
+.gooey-nav-container nav ul li.active a {
+  color: transparent;
+}
+
+.gooey-nav-container nav ul li a:hover {
+  color: #2563eb;
+}
+
+.gooey-nav-container .effect {
+  position: absolute;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.gooey-nav-container .effect.filter {
+  background: var(--color-1);
+  border-radius: 999px;
+  transition: all 0.4s cubic-bezier(0.4, 0.0, 0.2, 1);
+  filter: url(#goo-effect);
+  z-index: 1;
+}
+
+.gooey-nav-container .effect.text {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-weight: 500;
+  font-size: 0.875rem;
+  opacity: 0;
+  transform: scale(0.8);
+  transition: all 0.3s ease;
+  z-index: 3;
+}
+
+.gooey-nav-container .effect.text.active {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.gooey-nav-container .particle {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  top: 50%;
+  left: 50%;
+  margin: -5px 0 0 -5px;
+  pointer-events: none;
+  animation: particle-move var(--time, 600ms) ease-out forwards;
+}
+
+.gooey-nav-container .particle .point {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: var(--color);
+  transform: scale(0);
+  animation: particle-scale calc(var(--time, 600ms) * 0.4) ease-out forwards;
+}
+
+@keyframes particle-move {
+  from {
+    transform: translate(var(--start-x), var(--start-y)) rotate(0deg);
+    opacity: 1;
+  }
+  to {
+    transform: translate(var(--end-x), var(--end-y)) rotate(var(--rotate, 0deg));
+    opacity: 0;
+  }
+}
+
+@keyframes particle-scale {
+  0% {
+    transform: scale(0);
+  }
+  50% {
+    transform: scale(var(--scale, 1));
+  }
+  100% {
+    transform: scale(0);
+  }
+}
