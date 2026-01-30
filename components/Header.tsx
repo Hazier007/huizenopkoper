@@ -14,6 +14,7 @@ export function Header() {
   const navLinks = [
     { href: '/', label: 'Home' },
     { href: '/werking', label: 'Hoe werkt het?' },
+    { href: '/over-ons', label: 'Over ons' },
     { href: '/contact', label: 'Contact' },
   ];
 

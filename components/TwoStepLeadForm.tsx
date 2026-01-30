@@ -27,15 +27,10 @@ const PROPERTY_TYPES = [
 
 const PROVINCES = [
   'Antwerpen',
-  'Vlaams-Brabant',
   'Limburg',
   'Oost-Vlaanderen',
+  'Vlaams-Brabant',
   'West-Vlaanderen',
-  'Waals-Brabant',
-  'Henegouwen',
-  'Luik',
-  'Luxemburg',
-  'Namen',
 ];
 
 const CONDITIONS = [
