@@ -95,6 +95,7 @@ export function Footer() {
 
         <div className="mt-8 border-t pt-8 text-center text-sm text-gray-600">
           <p>&copy; {currentYear} Huizenopkoper.be. Alle rechten voorbehouden.</p>
+          <p className="mt-1">BTW BE 0672.948.386</p>
         </div>
       </div>
     </footer>
