@@ -1,3 +1,5 @@
+import nodemailer from 'nodemailer';
+
 interface LeadData {
   id: string;
   contact_name: string;
@@ -22,20 +24,45 @@ function escapeHtml(value: string) {
     .replace(/'/g, '&#039;');
 }
 
+function getSmtpConfig() {
+  const host = process.env.SMTP_HOST;
+  const port = Number(process.env.SMTP_PORT || 587);
+  const user = process.env.SMTP_USER;
+  const pass = process.env.SMTP_PASS;
+
+  if (!host || !user || !pass) {
+    return null;
+  }
+
+  return {
+    host,
+    port,
+    secure: port === 465,
+    auth: {
+      user,
+      pass,
+    },
+  };
+}
+
 export async function sendLeadNotificationEmail(leadData: LeadData) {
   try {
-    const accessKey = process.env.WEB3FORMS_ACCESS_KEY;
+    const smtpConfig = getSmtpConfig();
 
-    if (!accessKey || accessKey === 'your_web3forms_access_key_here') {
-      console.log('Web3Forms access key not configured, skipping email notification');
+    if (!smtpConfig) {
+      console.log('SMTP config ontbreekt, mailnotificatie overgeslagen');
       return { success: true, skipped: true };
     }
 
     const adminEmail = process.env.ADMIN_EMAIL || 'deblock.bart@gmail.com';
+    const fromEmail = process.env.SMTP_FROM || process.env.SMTP_USER || adminEmail;
+    const fromName = process.env.SMTP_FROM_NAME || 'Huizenopkoper.be';
     const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://huizenopkoper.be';
-
     const submittedAt = new Date().toLocaleString('nl-BE');
-    const plainTextLines = [
+
+    const transporter = nodemailer.createTransport(smtpConfig);
+
+    const text = [
       'Nieuwe lead via huizenopkoper.be',
       '',
       `Lead ID: ${leadData.id}`,
@@ -50,7 +77,7 @@ export async function sendLeadNotificationEmail(leadData: LeadData) {
       leadData.description ? `Beschrijving: ${leadData.description}` : null,
       `Admin link: ${baseUrl}/admin?leadId=${leadData.id}`,
       `Ingediend op: ${submittedAt}`,
-    ].filter(Boolean);
+    ].filter(Boolean).join('\n');
 
     const html = `
       <div style="font-family:Arial,sans-serif;line-height:1.6;color:#111827;max-width:640px;margin:0 auto;">
@@ -88,32 +115,16 @@ export async function sendLeadNotificationEmail(leadData: LeadData) {
       </div>
     `;
 
-    const response = await fetch('https://api.web3forms.com/submit', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-      },
-      body: JSON.stringify({
-        access_key: accessKey,
-        subject: `Nieuwe Lead: ${leadData.property_type} in ${leadData.city}`,
-        from_name: 'Huizenopkoper.be',
-        email: adminEmail,
-        message: plainTextLines.join('\n'),
-        html,
-        replyto: leadData.contact_email,
-        botcheck: '',
-      }),
+    const info = await transporter.sendMail({
+      from: `"${fromName}" <${fromEmail}>`,
+      to: adminEmail,
+      replyTo: leadData.contact_email,
+      subject: `Nieuwe Lead: ${leadData.property_type} in ${leadData.city}`,
+      text,
+      html,
     });
 
-    const result = await response.json();
-
-    if (!response.ok || result.success === false) {
-      console.error('Error sending Web3Forms email:', result);
-      return { success: false, error: result };
-    }
-
-    return { success: true, data: result };
+    return { success: true, data: { messageId: info.messageId } };
   } catch (error) {
     console.error('Error in sendLeadNotificationEmail:', error);
     return { success: false, error };
