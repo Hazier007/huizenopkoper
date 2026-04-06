@@ -84,6 +84,14 @@ export default async function HomePage() {
                 <Link href="/werking">Hoe werkt het?</Link>
               </Button>
             </div>
+            <div className="mt-6 flex justify-center">
+              <Link
+                href="/huizenopkoper-nederland"
+                className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm text-blue-100 backdrop-blur-sm transition hover:bg-white/15"
+              >
+                Ook NL-intentie? Bekijk de testpagina
+              </Link>
+            </div>
             <div className="mt-16 grid grid-cols-3 gap-8 max-w-2xl mx-auto">
               <div className="relative">
                 <div className="absolute inset-0 bg-gradient-to-br from-blue-500/20 to-transparent rounded-2xl blur-xl"></div>
