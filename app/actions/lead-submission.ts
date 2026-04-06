@@ -101,7 +101,13 @@ export async function submitLead(formData: LeadFormData, photoFiles: { name: str
 
     if (insertError) {
       console.error('Error inserting lead:', insertError);
-      return { success: false, error: 'Er is iets misgegaan bij het opslaan van uw gegevens' };
+
+      const debugMessage = insertError.message || 'Onbekende databasefout';
+      const safeHint = process.env.NODE_ENV !== 'production'
+        ? `Opslaan mislukt: ${debugMessage}`
+        : 'Er is iets misgegaan bij het opslaan van uw gegevens';
+
+      return { success: false, error: safeHint };
     }
 
     const uploadedPhotos: any[] = [];
