@@ -48,7 +48,7 @@ const TIMELINE_OPTIONS = [
 ];
 
 const MAX_PHOTOS = 12;
-const MIN_PHOTOS = 1;
+const MIN_PHOTOS = 0;
 const MAX_FILE_SIZE = 10 * 1024 * 1024;
 
 interface FormData {
@@ -145,10 +145,6 @@ export function TwoStepLeadForm() {
     }
     if (!formData.timeline) {
       toast.error('Selecteer een timing');
-      return false;
-    }
-    if (files.length < MIN_PHOTOS) {
-      toast.error(`Upload minimaal ${MIN_PHOTOS} foto`);
       return false;
     }
     return true;
