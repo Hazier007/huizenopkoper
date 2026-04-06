@@ -1,7 +1,3 @@
-import { Resend } from 'resend';
-
-const resend = new Resend(process.env.RESEND_API_KEY);
-
 interface LeadData {
   id: string;
   contact_name: string;
@@ -17,91 +13,107 @@ interface LeadData {
   description?: string;
 }
 
+function escapeHtml(value: string) {
+  return value
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
 export async function sendLeadNotificationEmail(leadData: LeadData) {
   try {
-    if (!process.env.RESEND_API_KEY || process.env.RESEND_API_KEY === 'your_resend_api_key_here') {
-      console.log('Resend API key not configured, skipping email notification');
+    const accessKey = process.env.WEB3FORMS_ACCESS_KEY;
+
+    if (!accessKey || accessKey === 'your_web3forms_access_key_here') {
+      console.log('Web3Forms access key not configured, skipping email notification');
       return { success: true, skipped: true };
     }
 
-    const adminEmail = process.env.ADMIN_EMAIL || 'admin@huizenopkoper.be';
-    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
+    const adminEmail = process.env.ADMIN_EMAIL || 'deblock.bart@gmail.com';
+    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://huizenopkoper.be';
 
-    const emailHtml = `
-      <!DOCTYPE html>
-      <html>
-        <head>
-          <meta charset="utf-8">
-          <style>
-            body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-            .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-            .header { background: linear-gradient(to right, #2563eb, #1d4ed8); color: white; padding: 20px; border-radius: 8px 8px 0 0; }
-            .content { background: #f9fafb; padding: 20px; border-radius: 0 0 8px 8px; }
-            .section { background: white; padding: 15px; margin-bottom: 15px; border-radius: 6px; border-left: 4px solid #2563eb; }
-            .label { font-weight: bold; color: #2563eb; }
-            .button { display: inline-block; padding: 12px 24px; background: #2563eb; color: white; text-decoration: none; border-radius: 6px; margin-top: 20px; }
-            .footer { text-align: center; margin-top: 20px; padding-top: 20px; border-top: 1px solid #e5e7eb; color: #6b7280; font-size: 14px; }
-          </style>
-        </head>
-        <body>
-          <div class="container">
-            <div class="header">
-              <h1 style="margin: 0;">Nieuwe Lead Ingediend</h1>
-              <p style="margin: 10px 0 0 0;">Een nieuwe eigenaar heeft interesse om te verkopen</p>
-            </div>
-            <div class="content">
-              <div class="section">
-                <h2 style="margin-top: 0;">Contactgegevens</h2>
-                <p><span class="label">Naam:</span> ${leadData.contact_name}</p>
-                <p><span class="label">Email:</span> <a href="mailto:${leadData.contact_email}">${leadData.contact_email}</a></p>
-                <p><span class="label">Telefoon:</span> <a href="tel:${leadData.contact_phone}">${leadData.contact_phone}</a></p>
-              </div>
+    const submittedAt = new Date().toLocaleString('nl-BE');
+    const plainTextLines = [
+      'Nieuwe lead via huizenopkoper.be',
+      '',
+      `Lead ID: ${leadData.id}`,
+      `Naam: ${leadData.contact_name}`,
+      `Email: ${leadData.contact_email}`,
+      `Telefoon: ${leadData.contact_phone}`,
+      `Pandtype: ${leadData.property_type}`,
+      `Locatie: ${leadData.city}, ${leadData.province} (${leadData.postal_code})`,
+      `Staat: ${leadData.condition}`,
+      `Timing: ${leadData.timeline}`,
+      leadData.living_area_m2 ? `Bewoonbare opp.: ${leadData.living_area_m2} m²` : null,
+      leadData.description ? `Beschrijving: ${leadData.description}` : null,
+      `Admin link: ${baseUrl}/admin?leadId=${leadData.id}`,
+      `Ingediend op: ${submittedAt}`,
+    ].filter(Boolean);
 
-              <div class="section">
-                <h2 style="margin-top: 0;">Pand Informatie</h2>
-                <p><span class="label">Type:</span> ${leadData.property_type}</p>
-                <p><span class="label">Locatie:</span> ${leadData.city}, ${leadData.province} (${leadData.postal_code})</p>
-                <p><span class="label">Staat:</span> ${leadData.condition}</p>
-                <p><span class="label">Timing:</span> ${leadData.timeline}</p>
-                ${leadData.living_area_m2 ? `<p><span class="label">Bewoonbare opp.:</span> ${leadData.living_area_m2} m²</p>` : ''}
-              </div>
+    const html = `
+      <div style="font-family:Arial,sans-serif;line-height:1.6;color:#111827;max-width:640px;margin:0 auto;">
+        <h1 style="margin-bottom:8px;">Nieuwe lead via huizenopkoper.be</h1>
+        <p style="margin-top:0;color:#4b5563;">Lead ID: ${escapeHtml(leadData.id)}</p>
 
-              ${leadData.description ? `
-              <div class="section">
-                <h2 style="margin-top: 0;">Beschrijving</h2>
-                <p>${leadData.description}</p>
-              </div>
-              ` : ''}
+        <h2 style="margin-top:24px;">Contactgegevens</h2>
+        <ul>
+          <li><strong>Naam:</strong> ${escapeHtml(leadData.contact_name)}</li>
+          <li><strong>Email:</strong> ${escapeHtml(leadData.contact_email)}</li>
+          <li><strong>Telefoon:</strong> ${escapeHtml(leadData.contact_phone)}</li>
+        </ul>
 
-              <div style="text-align: center;">
-                <a href="${baseUrl}/admin?leadId=${leadData.id}" class="button">
-                  Bekijk volledige details
-                </a>
-              </div>
+        <h2 style="margin-top:24px;">Pandinformatie</h2>
+        <ul>
+          <li><strong>Type:</strong> ${escapeHtml(leadData.property_type)}</li>
+          <li><strong>Locatie:</strong> ${escapeHtml(`${leadData.city}, ${leadData.province} (${leadData.postal_code})`)}</li>
+          <li><strong>Staat:</strong> ${escapeHtml(leadData.condition)}</li>
+          <li><strong>Timing:</strong> ${escapeHtml(leadData.timeline)}</li>
+          ${leadData.living_area_m2 ? `<li><strong>Bewoonbare opp.:</strong> ${leadData.living_area_m2} m²</li>` : ''}
+        </ul>
 
-              <div class="footer">
-                <p>Lead ID: ${leadData.id}</p>
-                <p>Ingediend op: ${new Date().toLocaleString('nl-BE')}</p>
-              </div>
-            </div>
-          </div>
-        </body>
-      </html>
+        ${leadData.description ? `
+          <h2 style="margin-top:24px;">Beschrijving</h2>
+          <p>${escapeHtml(leadData.description)}</p>
+        ` : ''}
+
+        <p style="margin-top:24px;">
+          <a href="${baseUrl}/admin?leadId=${encodeURIComponent(leadData.id)}" style="display:inline-block;padding:12px 18px;background:#2563eb;color:#fff;text-decoration:none;border-radius:8px;">
+            Bekijk lead in admin
+          </a>
+        </p>
+
+        <p style="margin-top:24px;color:#6b7280;font-size:14px;">Ingediend op: ${escapeHtml(submittedAt)}</p>
+      </div>
     `;
 
-    const { data, error } = await resend.emails.send({
-      from: 'Huizenopkoper.be <noreply@huizenopkoper.be>',
-      to: adminEmail,
-      subject: `Nieuwe Lead: ${leadData.property_type} in ${leadData.city}`,
-      html: emailHtml,
+    const response = await fetch('https://api.web3forms.com/submit', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+      },
+      body: JSON.stringify({
+        access_key: accessKey,
+        subject: `Nieuwe Lead: ${leadData.property_type} in ${leadData.city}`,
+        from_name: 'Huizenopkoper.be',
+        email: adminEmail,
+        message: plainTextLines.join('\n'),
+        html,
+        replyto: leadData.contact_email,
+        botcheck: '',
+      }),
     });
 
-    if (error) {
-      console.error('Error sending email:', error);
-      return { success: false, error };
+    const result = await response.json();
+
+    if (!response.ok || result.success === false) {
+      console.error('Error sending Web3Forms email:', result);
+      return { success: false, error: result };
     }
 
-    return { success: true, data };
+    return { success: true, data: result };
   } catch (error) {
     console.error('Error in sendLeadNotificationEmail:', error);
     return { success: false, error };
